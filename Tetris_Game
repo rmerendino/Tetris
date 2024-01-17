@@ -98,3 +98,53 @@ SHAPES = [
          '.....']
     ],
 ]
+
+class Tetromino: #each individual shape
+    #properties: shape, color, location (x and y coordinate), rotation
+    def __init__(self, x, y, shape):
+        self.x = x
+        self.y = y
+        self.shape = shape
+        self.color = random.choice(COLORS)
+        self.rotation = 0
+
+class Tetris: #game logic, how the game will play
+    def __init___(self, width, height):
+        self.width = width
+        self.height = height 
+        self.grid = [[0 for i in range(width)] for i in range(height)]
+        self.score = 0
+        self.game_over = False
+
+#methods: new piece, checking if the landing spot is valid, lock piece in spot, clear filled lines, draw the game, update game
+    def new_piece(self): #creates a new piece
+        shape = random.choice(SHAPES)
+        Tetromino(self.width//2, 0, shape)
+
+    def valid_move(self, piece, x, y, rotation): #check if a piece can go to a certain position
+        pass 
+
+    def lock_piece(self, piece): #lock piece in place if in valid spot
+        pass 
+
+    def clear_lines(self): #clear filled in lines
+        pass 
+
+    def draw(self, screen): #draw the grid and pieces:
+        pass 
+
+    def update(self): #update screen
+        pass 
+
+def score(screen, score, x, y):
+    pass 
+
+def game_over(screen, x, y):
+    pass
+
+def main():
+    pass 
+#creating instances(objects) of our classes
+#insert pygame key commands
+    if event.key ==pygame.KEYDOWN:
+        if event.key==pygame.K_LEFT:
