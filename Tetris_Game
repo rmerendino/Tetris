@@ -122,7 +122,15 @@ class Tetris: #game logic, how the game will play
         Tetromino(self.width//2, 0, shape)
 
     def valid_move(self, piece, x, y, rotation): #check if a piece can go to a certain position
-        pass 
+        for i, row in enumerate(piece.shape[(piece.rotation+rotation) % len(piece.shape)]):
+            for j, cell in enumerate(row):
+                try:
+                    if cell =='0' and (self.grid[piece.y + i + y][piece.x +j +x] !=0):
+                        return False
+                except IndexError:
+                    return False
+        return True
+
 
     def lock_piece(self, piece): #lock piece in place if in valid spot
         pass 
@@ -143,7 +151,15 @@ def game_over(screen, x, y):
     pass
 
 def main():
-    pass 
+    #initialize pygame
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption('Tetris')
+    clock = pygame.time.Clock()
+
+    fall_time = 0
+    fall_speed = 50 #how fast or slow our tetronimos are traveling down the screen
+
+    game = Tetris(WIDTH//GRID_SIZE, HEIGHT//GRID_SIZE)
 #creating instances(objects) of our classes
 #insert pygame key commands
     if event.key ==pygame.KEYDOWN:
