@@ -109,7 +109,7 @@ class Tetromino: #each individual shape
         self.rotation = 0
 
 class Tetris: #game logic, how the game will play
-    def __init___(self, width, height):
+    def __init__(self, width, height):
         self.width = width
         self.height = height 
         self.grid = [[0 for i in range(width)] for i in range(height)]
@@ -136,6 +136,15 @@ class Tetris: #game logic, how the game will play
             for j, cell in enumerate(row):
                 if cell == '0':
                     self.grid[piece.y + i][piece.x + j] = piece.color
+        lines_cleared = self.clear_lines()
+        self.score += lines_cleared
+        #create a new piece
+        self.current_piece = self.new_piece()
+
+        #check if the game is over
+        if not self.valid_move(self.current_piece, 0,0,0):
+            self.game_over = True 
+        return lines_cleared
 
     def clear_lines(self): #clear filled in lines
         lines_cleared = 0
@@ -160,12 +169,12 @@ class Tetris: #game logic, how the game will play
                 self.lock_piece(self.current_piece) 
 
 def draw_score(screen, score, x, y):
-    font = pygame.font.Font("Arial", 36)
+    font = pygame.font.Font(None, 36)
     text = font.render(f"Score: {score}", True, WHITE)
     screen.blit(text, (x,y))
 
 def draw_game_over(screen, x, y):
-    font = pygame.font.Font("Arial", 50)
+    font = pygame.font.Font(None, 50)
     text = font.render("GAME OVER", True, RED)
     screen.blit(text, (x,y))
 
@@ -175,29 +184,55 @@ def main():
     pygame.display.set_caption('Tetris')
     clock = pygame.time.Clock()
 
-    fall_time = 0
+    fall_time = 0 #keep track of the time the tetronimo last fell
     fall_speed = 50 #how fast or slow our tetronimos are traveling down the screen
 
     game = Tetris(WIDTH//GRID_SIZE, HEIGHT//GRID_SIZE) #creating instances(objects) of our classes
-#main game loop
-while True: #while the game is not over
-    screen.fill(BLACK) #"reset" the screen after the last game
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.key==pygame.KEYDOWN:
-            if event.key==pygame.K_LEFT:
-                if game.valid_move(game.current_piece, -1, 0, 0):
-                    game.current_piece.x -= 1  #move the piece left
-            if event.key==pygame.K_RIGHT:
-                if game.valid_move(game.current_piece, 1, 0, 0):
-                    game.current_piece.x += 1 #move the piece to the right
-            if event.key==pygame.K_DOWN:
-                if game.valid_move(game.current_piece, 0, 1, 0):
-                    game.current_piece.y += 1 #add 1 to go down - pygame functionality
-                    #move the piece down
-            if event.key==pygame.K_UP:
-                if game.valid_move(game.current_piece, 0, 0, 1):
-                    game.current_piece.rotation += 1 #rotate the piece
+    
+# WIDTH//GRID_SIZE, HEIGHT//GRID_SIZE
 
+    #main game loop
+    while True: #while the game is not over
+        screen.fill(BLACK) #"reset" the screen after the last game
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type==pygame.KEYDOWN:
+                if event.key==pygame.K_LEFT:
+                    if game.valid_move(game.current_piece, -1, 0, 0):
+                        game.current_piece.x -= 1  #move the piece left
+                if event.key==pygame.K_RIGHT:
+                    if game.valid_move(game.current_piece, 1, 0, 0):
+                        game.current_piece.x += 1 #move the piece to the right
+                if event.key==pygame.K_DOWN:
+                    if game.valid_move(game.current_piece, 0, 1, 0):
+                        game.current_piece.y += 1 #add 1 to go down - pygame functionality
+                        #move the piece down
+                if event.key==pygame.K_UP:
+                    if game.valid_move(game.current_piece, 0, 0, 1):
+                        game.current_piece.rotation += 1 #rotate the piece
+
+        delta_time = clock.get_rawtime() #time elapsed since the last fall
+        fall_time += delta_time
+
+        if fall_time>=fall_speed:
+            game.update()
+            fall_time = 0
+
+        draw_score(screen, game.score, 15, 10)
+        game.draw(screen)
+
+        if game.game_over:
+            draw_game_over(screen, 400, 300)
+
+        pygame.display.flip() #updates the contents of the display, so everything is visible
+
+if __name__ == "__main__":
+    main()
+
+        
+
+
+
+                    
