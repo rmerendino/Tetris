@@ -159,7 +159,7 @@ class Tetris: #game logic, how the game will play
         for y, row in enumerate(self.grid):
             for x, cell in enumerate(row):
                 if cell:
-                    pygame.draw.rect(screen, (x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE -1, GRID_SIZE-1)) 
+                    pygame.draw.rect(screen, cell (x*GRID_SIZE, y*GRID_SIZE, GRID_SIZE -1, GRID_SIZE-1)) 
 
     def update(self): #update screen
         if not self.game_over:
